@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 
 warden = Flask(__name__)
 
-#POST route for Admission Controller  
+#POST route for Admission Controller
 @warden.route('/validate', methods=['POST'])
 
 #Admission Control Logic
@@ -15,7 +15,7 @@ def deployment_webhook():
             return k8s_response(True, uid, "Billing label exists")
     except:
         return k8s_response(False, uid, "No labels exist. A Billing label is required")
-    
+
     #Send response back to controller if failed
     return k8s_response(False, uid, "Not allowed without a billing label")
 
