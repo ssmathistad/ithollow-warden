@@ -88,7 +88,13 @@ Steps to deploy and test this admission controller.
 
 1. Add a mutating webhook
 - Delete pod `test1`
+   ```
+   kubectl delete po test1
+   ```
 - Delete validatingwebhookconfigurations `warden-validating-webhook`
+   ```
+   kubectl delete validatingwebhookconfigurations warden-validating-webhook
+   ```
 - Remove the pod and service for the validating webhook.
    ```
    kubectl delete -f warden-k8s.yaml
@@ -104,7 +110,10 @@ Steps to deploy and test this admission controller.
    ```bash
    kind load docker-image octumn/mutating-webhook:latest
    ```
-- Update the warden-k8s.yaml file to point to your new image and re-apply.
+- *Update* the warden-k8s.yaml file to point to your new image and re-apply.
+   ```
+   kubectl apply -f warden-k8s.yaml
+   ```
 - Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
    Kubernetes API server.
    ```bash
@@ -129,7 +138,7 @@ Steps to deploy and test this admission controller.
 
    ```bash
    kubectl delete -f test-pods
-   kubectl delete validatingwebhookconfigurations warden-mutating-webhook
+   kubectl delete mutatingwebhookconfigurations warden-mutating-webhook
    kubectl delete namespace validation
    helm uninstall -n cert-manager cert-manager
    kind delete cluster 
