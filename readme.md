@@ -93,12 +93,6 @@ Steps to deploy and test this admission controller.
    ```
    kubectl delete -f warden-k8s.yaml
    ```
-- Update the warden-k8s.yaml file to point to your new image and re-apply.
-- Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
-   Kubernetes API server.
-   ```bash
-   cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
-   ```
 - Build the container using the Dockerfile within the directory. Push the image to your image repository.
    #### Example with Docker Hub
    ```bash
@@ -109,6 +103,12 @@ Steps to deploy and test this admission controller.
 - Load your image into kind.
    ```bash
    kind load docker-image octumn/mutating-webhook:latest
+   ```
+- Update the warden-k8s.yaml file to point to your new image and re-apply.
+- Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
+   Kubernetes API server.
+   ```bash
+   cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
 
 1. Test your app again. If using the default mutating-warden.py included with this repository,
