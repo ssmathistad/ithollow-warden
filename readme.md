@@ -47,13 +47,13 @@ Steps to deploy and test this admission controller.
 
    #### Example with Docker
    ```bash
-   docker build . -t octumn/cert-manager-webhook:latest
-   docker push octumn/cert-manager-webhook:latest 
+   docker build . -t octumn/validating-webhook:latest
+   docker push octumn/validating-webhook:latest 
    ```
 
 1. Load your image into kind.
    ```bash
-   kind load docker-image octumn/cert-manager-webhook:latest
+   kind load docker-image octumn/validating-webhook:latest
    ```
 
 1. Update the warden-k8s.yaml file to point to your new image.
@@ -72,7 +72,7 @@ Steps to deploy and test this admission controller.
    cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
 
-1. Test your app. If using the default validating-warden.py included with this repository,
+1. Test your app. If using the default warden-validating.py included with this repository,
     there are three test manifests in the [test-pods](/test-pods) folder.
 
    ```bash
@@ -86,12 +86,24 @@ Steps to deploy and test this admission controller.
    Error from server: error when creating "test-pods/test3.yaml": admission webhook "warden.validation.svc" denied the request: Not allowed without a billing label
    ```
 
-1. Prepare to add a mutating webhook
+1. Add a mutating webhook
 - Delete pod `test1`
+- Delete validatingwebhookconfigurations `warden-validating-webhook`
 - Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
    Kubernetes API server.
    ```bash
-   cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+   cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+   ```
+- Build the container using the Dockerfile within the directory. Push the image to your image repository.
+   #### Example with Docker
+   ```bash
+   docker build . -t octumn/mutating-webhook:latest
+   docker push octumn/mutating-webhook:latest 
+   ```
+
+- Load your image into kind.
+   ```bash
+   kind load docker-image octumn/mutating-webhook:latest
    ```
 
 1. Test your app again. If using the default mutating-warden.py included with this repository,
@@ -112,7 +124,7 @@ Steps to deploy and test this admission controller.
 
    ```bash
    kubectl delete -f test-pods
-   kubectl delete validatingwebhookconfigurations warden-validating-webhook warden-mutating-webhook
+   kubectl delete validatingwebhookconfigurations warden-mutating-webhook
    kubectl delete namespace validation
    helm uninstall -n cert-manager cert-manager
    kind delete cluster 
