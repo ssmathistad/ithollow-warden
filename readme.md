@@ -65,14 +65,14 @@ Steps to deploy and test this admission controller.
    kubectl apply -f warden-k8s.yaml
    ```
 
-1. Apply the webhook.yaml file to deploy the validation configuration to the
+1. Apply the validating-webhook.yaml file to deploy the validation configuration to the
    Kubernetes API server.
 
    ```bash
-   cat webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+   cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
 
-1. Test your app. If using the default warden.py included with this repository,
+1. Test your app. If using the default validating-warden.py included with this repository,
     there are three test manifests in the [test-pods](/test-pods) folder.
 
    ```bash
@@ -86,11 +86,33 @@ Steps to deploy and test this admission controller.
    Error from server: error when creating "test-pods/test3.yaml": admission webhook "warden.validation.svc" denied the request: Not allowed without a billing label
    ```
 
+1. Prepare to add a mutating webhook
+- Delete pod `test1`
+- Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
+   Kubernetes API server.
+   ```bash
+   cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+   ```
+
+1. Test your app again. If using the default mutating-warden.py included with this repository,
+    there are three test manifests in the [test-pods](/test-pods) folder.
+
+   ```bash
+   kubectl apply -f test-pods
+   ```
+
+   The output should be:
+   ```
+   pod/test1 created
+   pod/test2 created
+   pod/test3 created
+   ```
+
 1. Cleanup
 
    ```bash
    kubectl delete -f test-pods
-   kubectl delete validatingwebhookconfigurations validating-webhook
+   kubectl delete validatingwebhookconfigurations warden-validating-webhook warden-mutating-webhook
    kubectl delete namespace validation
    helm uninstall -n cert-manager cert-manager
    kind delete cluster 
