@@ -15,4 +15,4 @@ COPY . /app
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "app/warden.py" ]
+CMD [ "app/warden-mutating.py" ]

@@ -47,7 +47,7 @@ Steps to deploy and test this admission controller.
 
    #### Example with Docker
    ```bash
-   docker build . -t octumn/validating-webhook:latest
+   docker build . -f validating.Dockerfile -t octumn/validating-webhook:latest
    docker push octumn/validating-webhook:latest 
    ```
 
@@ -97,7 +97,7 @@ Steps to deploy and test this admission controller.
 - Build the container using the Dockerfile within the directory. Push the image to your image repository.
    #### Example with Docker
    ```bash
-   docker build . -t octumn/mutating-webhook:latest
+   docker build . -f mutating.Dockerfile -t octumn/mutating-webhook:latest
    docker push octumn/mutating-webhook:latest 
    ```
 
