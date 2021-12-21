@@ -11,7 +11,6 @@ Steps to deploy and test this admission controller.
    kind create cluster --config kind.yaml
    ```
 
-
 1. Install cert-manager
 
    ```bash
@@ -32,7 +31,7 @@ Steps to deploy and test this admission controller.
 
 1. Update `certs.yaml` if you're using different namespace/names etc.
 
-1. Create root CA and self signed certificate:
+1. Create the validation namespace, the root CA, and self signed certificate:
 
    ```bash
    kubectl apply -f certs.yaml
@@ -44,8 +43,13 @@ Steps to deploy and test this admission controller.
    CA=`kubectl -n validation get secret validation-ca-tls -o jsonpath='{.data.ca\.crt}'`
    ```
 
-1. Build the container using the Dockerfile within the directory. Push the image
-   to your image repository
+1. Build the container using the Dockerfile within the directory. Push the image to your image repository.
+
+   #### Example with Docker
+   ```bash
+   docker build . -t octumn/cert-manager-webhook:latest
+   docker push octumn/cert-manager-webhook:latest 
+   ```
 
 1. Update the warden-k8s.yaml file to point to your new image.
 

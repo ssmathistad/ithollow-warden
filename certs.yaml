@@ -1,4 +1,12 @@
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: validation
+spec: {}
+status: {}
+---
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: selfsigned-issuer
@@ -6,7 +14,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: validation-ca
@@ -18,7 +26,7 @@ spec:
   issuerRef:
     name: selfsigned-issuer
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: validation-ca-issuer
@@ -27,7 +35,7 @@ spec:
   ca:
     secretName: validation-ca-tls
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: warden-server
