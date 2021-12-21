@@ -51,6 +51,11 @@ Steps to deploy and test this admission controller.
    docker push octumn/cert-manager-webhook:latest 
    ```
 
+1. Load your image into kind.
+   ```bash
+   kind load docker-image octumn/cert-manager-webhook:latest
+   ```
+
 1. Update the warden-k8s.yaml file to point to your new image.
 
 1. apply the warden-k8s.yaml file to deploy your admission controller within the
@@ -71,7 +76,7 @@ Steps to deploy and test this admission controller.
     there are three test manifests in the [test-pods](/test-pods) folder.
 
    ```bash
-   kubectl -n default apply -f test-pods
+   kubectl apply -f test-pods
    ```
 
 1. Cleanup
