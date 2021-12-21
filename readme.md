@@ -45,7 +45,7 @@ Steps to deploy and test this admission controller.
 
 1. Build the container using the Dockerfile within the directory. Push the image to your image repository.
 
-   #### Example with Docker
+   #### Example with Docker Hub
    ```bash
    docker build . -f validating.Dockerfile -t octumn/validating-webhook:latest
    docker push octumn/validating-webhook:latest 
@@ -100,7 +100,7 @@ Steps to deploy and test this admission controller.
    cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
 - Build the container using the Dockerfile within the directory. Push the image to your image repository.
-   #### Example with Docker
+   #### Example with Docker Hub
    ```bash
    docker build . -f mutating.Dockerfile -t octumn/mutating-webhook:latest
    docker push octumn/mutating-webhook:latest 

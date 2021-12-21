@@ -9,7 +9,7 @@ spec:
   restartPolicy: OnFailure
   containers:
     - name: warden
-      image: octumn/cert-manager-webhook:latest
+      image: octumn/validating-webhook:latest
       imagePullPolicy: Always
       volumeMounts:
         - name: certs
