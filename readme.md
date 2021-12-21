@@ -22,12 +22,11 @@ Steps to deploy and test this admission controller.
    helm repo update
 
    # Install the cert-manager Helm chart (including cert-manager CRDs)
-   helm install \  
-   cert-manager \
+   helm install cert-manager \
    --namespace cert-manager \
    --create-namespace \
    --set installCRDs=true \
-   --version v1.3.1 \
+   --version v1.6.1 \
    jetstack/cert-manager
    ```
 
@@ -77,5 +76,5 @@ Steps to deploy and test this admission controller.
    kubectl delete -f test-pods
    kubectl delete validatingwebhookconfigurations validating-webhook
    kubectl delete namespace validation
-   helm uninstall -n cert-manager jetstack/cert-manager
+   helm uninstall -n cert-manager cert-manager
 ```
