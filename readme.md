@@ -15,8 +15,20 @@ Steps to deploy and test this admission controller.
 1. Install cert-manager
 
    ```bash
-   kubectl create namespace cert-manager
-   kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.13.1/cert-manager.yaml
+   # Add the Jetstack Helm repository
+   helm repo add jetstack https://charts.jetstack.io
+
+   # Update your local Helm chart repository cache
+   helm repo update
+
+   # Install the cert-manager Helm chart (including cert-manager CRDs)
+   helm install \  
+   cert-manager \
+   --namespace cert-manager \
+   --create-namespace \
+   --set installCRDs=true \
+   --version v1.3.1 \
+   jetstack/cert-manager
    ```
 
 1. Update `certs.yaml` if you're using different namespace/names etc.
@@ -24,14 +36,13 @@ Steps to deploy and test this admission controller.
 1. Create root CA and self signed certificate:
 
    ```bash
-   kubectl create namespace validation
-   kubectl -n validation apply -f certs.yaml
+   kubectl apply -f certs.yaml
    ```
 
 1. Get the base64 value of the ca.crt file in the secret
 
    ```bash
-   CA=kubectl -n validation get secret validation-ca-tls -o jsonpath='{.data.ca\.crt}'
+   CA=`kubectl -n validation get secret validation-ca-tls -o jsonpath='{.data.ca\.crt}'`
    ```
 
 1. Build the container using the Dockerfile within the directory. Push the image
@@ -43,14 +54,14 @@ Steps to deploy and test this admission controller.
    cluster.
 
    ```bash
-   kubectl -n validation apply -f warden-k8s.yaml
+   kubectl apply -f warden-k8s.yaml
    ```
 
 1. Apply the webhook.yaml file to deploy the validation configuration to the
    Kubernetes API server.
 
    ```bash
-   cat webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl -n validation apply -f -
+   cat webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
 
 1. Test your app. If using the default warden.py included with this repository,
@@ -63,8 +74,8 @@ Steps to deploy and test this admission controller.
 1. Cleanup
 
    ```bash
-   kubectl -n default delete -f test-pods
+   kubectl delete -f test-pods
    kubectl delete validatingwebhookconfigurations validating-webhook
    kubectl delete namespace validation
-   kubectl delete -f https://github.com/jetstack/cert-manager/releases/download/v0.13.1/cert-manager.yaml
+   helm uninstall -n cert-manager jetstack/cert-manager
 ```
