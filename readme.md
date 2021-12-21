@@ -82,9 +82,7 @@ Steps to deploy and test this admission controller.
    The output should be:
    ```
    pod/test1 created
-
    Error from server: error when creating "test-pods/test2.yaml": admission webhook "warden.validation.svc" denied the request: No labels exist. A Billing label is required
-   
    Error from server: error when creating "test-pods/test3.yaml": admission webhook "warden.validation.svc" denied the request: Not allowed without a billing label
    ```
 
