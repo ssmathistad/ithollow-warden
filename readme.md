@@ -86,4 +86,5 @@ Steps to deploy and test this admission controller.
    kubectl delete validatingwebhookconfigurations validating-webhook
    kubectl delete namespace validation
    helm uninstall -n cert-manager cert-manager
+   kind delete cluster 
 ```
