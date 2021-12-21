@@ -89,6 +89,11 @@ Steps to deploy and test this admission controller.
 1. Add a mutating webhook
 - Delete pod `test1`
 - Delete validatingwebhookconfigurations `warden-validating-webhook`
+- Remove the pod and service for the validating webhook.
+   ```
+   kubectl delete -f warden-k8s.yaml
+   ```
+- Update the warden-k8s.yaml file to point to your new image and re-apply.
 - Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
    Kubernetes API server.
    ```bash
