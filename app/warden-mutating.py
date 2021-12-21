@@ -24,7 +24,7 @@ def deployment_webhook():
 #Function to respond back to the Admission Controller
 def k8s_response(allowed, uid, message):
     if allowed  == True:
-        json_patch = jsonpatch.JsonPatch([{"op": "add", "path": "/metadata/labels/demo", "value": "codeconnect"}])
+        json_patch = jsonpatch.JsonPatch([{"op": "add", "path": "/metadata/labels/billing", "value": "customer1"}])
         base64_patch = base64.b64encode(json_patch.to_string().encode("utf-8")).decode("utf-8")
         return jsonify({"apiVersion": "admission.k8s.io/v1", "kind": "AdmissionReview", "response": {"allowed": allowed, "uid": uid, "status": {"message": message}, "patchType": "JSONPatch", "patch": base64_patch}})
         
