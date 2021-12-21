@@ -87,39 +87,38 @@ Steps to deploy and test this admission controller.
    ```
 
 1. Add a mutating webhook
-- Delete pod `test1`
-   ```
-   kubectl delete po test1
-   ```
-- Delete validatingwebhookconfigurations `warden-validating-webhook`
-   ```
-   kubectl delete validatingwebhookconfigurations warden-validating-webhook
-   ```
-- Remove the pod and service for the validating webhook.
-   ```
-   kubectl delete -f warden-k8s.yaml
-   ```
-- Build the container using the Dockerfile within the directory. Push the image to your image repository.
-   #### Example with Docker Hub
-   ```bash
-   docker build . -f mutating.Dockerfile -t octumn/mutating-webhook:latest
-   docker push octumn/mutating-webhook:latest 
-   ```
+   - Delete pod `test1`
+      ```
+      kubectl delete po test1
+      ```
+   - Delete validatingwebhookconfigurations `warden-validating-webhook`
+      ```
+      kubectl delete validatingwebhookconfigurations warden-validating-webhook
+      ```
+   - Remove the pod and service for the validating webhook.
+      ```
+      kubectl delete -f warden-k8s.yaml
+      ```
+   - Build the container using the Dockerfile within the directory. Push the image to your image repository.
+      #### Example with Docker Hub
+      ```bash
+      docker build . -f mutating.Dockerfile -t octumn/mutating-webhook:latest
+      docker push octumn/mutating-webhook:latest 
+      ```
 
-- Load your image into kind.
-   ```bash
-   kind load docker-image octumn/mutating-webhook:latest
+   - Load your image into kind.
+      ```bash
+      kind load docker-image octumn/mutating-webhook:latest
+      ```
+   - *Update* the warden-k8s.yaml file to point to your new image and re-apply.
+      ```
+      kubectl apply -f warden-k8s.yaml
+      ```
+   - Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
+      Kubernetes API server.
+      ```bash
+      cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
    ```
-- *Update* the warden-k8s.yaml file to point to your new image and re-apply.
-   ```
-   kubectl apply -f warden-k8s.yaml
-   ```
-- Apply the mutating-webhook.yaml file to deploy the mutating configuration to the
-   Kubernetes API server.
-   ```bash
-   cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
-   ```
-
 1. Test your app again. If using the default mutating-warden.py included with this repository,
     there are three test manifests in the [test-pods](/test-pods) folder.
 
