@@ -1,0 +1,217 @@
+{
+   "kind":"AdmissionReview",
+   "request":{
+      "kind":{
+         "kind":"Pod",
+         "version":"v1",
+         "group":""
+      },
+      "resource":{
+         "resource":"pods",
+         "version":"v1",
+         "group":""
+      },
+      "uid":"4e9a60a8-65da-4f67-9a6e-d27abac7fa1f",
+      "object":{
+         "status":{
+            "phase":"Pending",
+            "qosClass":"BestEffort"
+         },
+         "kind":"Pod",
+         "spec":{
+            "dnsPolicy":"ClusterFirst",
+            "securityContext":{
+               
+            },
+            "serviceAccountName":"default",
+            "schedulerName":"default-scheduler",
+            "enableServiceLinks":true,
+            "serviceAccount":"default",
+            "priority":0,
+            "terminationGracePeriodSeconds":30,
+            "restartPolicy":"OnFailure",
+            "volumes":[
+               {
+                  "name":"kube-api-access-bfmgw",
+                  "projected":{
+                     "sources":[
+                        {
+                           "serviceAccountToken":{
+                              "path":"token",
+                              "expirationSeconds":3607
+                           }
+                        },
+                        {
+                           "configMap":{
+                              "items":[
+                                 {
+                                    "path":"ca.crt",
+                                    "key":"ca.crt"
+                                 }
+                              ],
+                              "name":"kube-root-ca.crt"
+                           }
+                        },
+                        {
+                           "downwardAPI":{
+                              "items":[
+                                 {
+                                    "path":"namespace",
+                                    "fieldRef":{
+                                       "fieldPath":"metadata.namespace",
+                                       "apiVersion":"v1"
+                                    }
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
+               }
+            ],
+            "tolerations":[
+               {
+                  "operator":"Exists",
+                  "tolerationSeconds":300,
+                  "effect":"NoExecute",
+                  "key":"node.kubernetes.io/not-ready"
+               },
+               {
+                  "operator":"Exists",
+                  "tolerationSeconds":300,
+                  "effect":"NoExecute",
+                  "key":"node.kubernetes.io/unreachable"
+               }
+            ],
+            "containers":[
+               {
+                  "terminationMessagePath":"/dev/termination-log",
+                  "name":"test2",
+                  "image":"nginx:latest",
+                  "volumeMounts":[
+                     {
+                        "readOnly":true,
+                        "mountPath":"/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name":"kube-api-access-bfmgw"
+                     }
+                  ],
+                  "terminationMessagePolicy":"File",
+                  "imagePullPolicy":"Always",
+                  "resources":{
+                     
+                  }
+               }
+            ],
+            "preemptionPolicy":"PreemptLowerPriority"
+         },
+         "apiVersion":"v1",
+         "metadata":{
+            "name":"test2",
+            "labels":{
+               "app":"nginx"
+            },
+            "namespace":"nginx",
+            "managedFields":[
+               {
+                  "fieldsV1":{
+                     "f:metadata":{
+                        "f:annotations":{
+                           "f:kubectl.kubernetes.io/last-applied-configuration":{
+                              
+                           },
+                           ".":{
+                              
+                           }
+                        },
+                        "f:labels":{
+                           "f:app":{
+                              
+                           },
+                           ".":{
+                              
+                           }
+                        }
+                     },
+                     "f:spec":{
+                        "f:securityContext":{
+                           
+                        },
+                        "f:enableServiceLinks":{
+                           
+                        },
+                        "f:schedulerName":{
+                           
+                        },
+                        "f:containers":{
+                           "k:{\"name\":\"test2\"}":{
+                              "f:image":{
+                                 
+                              },
+                              "f:imagePullPolicy":{
+                                 
+                              },
+                              "f:terminationMessagePath":{
+                                 
+                              },
+                              "f:name":{
+                                 
+                              },
+                              "f:resources":{
+                                 
+                              },
+                              "f:terminationMessagePolicy":{
+                                 
+                              },
+                              ".":{
+                                 
+                              }
+                           }
+                        },
+                        "f:restartPolicy":{
+                           
+                        },
+                        "f:dnsPolicy":{
+                           
+                        },
+                        "f:terminationGracePeriodSeconds":{
+                           
+                        }
+                     }
+                  },
+                  "apiVersion":"v1",
+                  "manager":"kubectl-client-side-apply",
+                  "time":"2021-12-22T13:40:01Z",
+                  "operation":"Update",
+                  "fieldsType":"FieldsV1"
+               }
+            ],
+            "creationTimestamp":"2021-12-22T13:40:01Z",
+            "annotations":{
+               "kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"nginx\"},\"name\":\"test2\",\"namespace\":\"nginx\"},\"spec\":{\"containers\":[{\"image\":\"nginx:latest\",\"imagePullPolicy\":\"Always\",\"name\":\"test2\"}],\"restartPolicy\":\"OnFailure\"}}\n"
+            },
+            "uid":"ce6a51d9-1272-47c1-bffa-5199ddeca063"
+         }
+      },
+      "namespace":"nginx",
+      "requestKind":{
+         "kind":"Pod",
+         "version":"v1",
+         "group":""
+      },
+      "requestResource":{
+         "resource":"pods",
+         "version":"v1",
+         "group":""
+      },
+      "userInfo":{
+         "username":"kubernetes-admin",
+         "groups":[
+            "system:masters",
+            "system:authenticated"
+         ]
+      },
+      "oldObject":null,
+      "dryRun":false,
+      "operation":"172.18.0.4"
+   }
+}

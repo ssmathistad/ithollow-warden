@@ -26,7 +26,9 @@ kubectl apply -f warden-k8s.yaml
 
 cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
 
-sleep 20
+sleep 10
+
+kubectl create ns nginx
 
 kubectl apply -f test-pods/test.yaml
 

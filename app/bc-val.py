@@ -9,16 +9,21 @@ warden = Flask(__name__)
 @warden.route('/validate', methods=['POST'])
 #Admission Control Logic
 def validating_webhook():
-    request_info = request.get_json()   
+    request_info = request.get_json()
     uid = request_info["request"].get("uid")
     allowed = True
 
+    narrow_down = request_info["request"]["object"]["spec"]
+
+    #sys.stdout.write(json.dumps(request_info))
+    #sys.stdout.write(json.dumps(narrow_down))
+
     try:
-        if request_info["request"]["object"].get("namespace") == "nginx":
+        if request_info["request"]["object"]["metadata"].get("namespace") == "nginx":
             for container_spec in request_info["request"]["object"]["spec"]["containers"]:
-                print(container_spec)
-                print("---------")
-                if container_spec.get("image") != "nginx":
+                # sys.stdout.write(json.dumps(container_spec))
+                # print("---------")
+                if container_spec.get("image") != "nginx:latest":
                     allowed = False
 
             if allowed == True:
@@ -29,7 +34,8 @@ def validating_webhook():
         return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'")
 
     #return k8s_response(False, uid, f"{request_info}")
-    return k8s_response(False, uid, "Check")
+    #return k8s_response(False, uid, "Check")
+    return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'")
 
 # @warden.route("/mutate", methods=["POST"])
 # def mutate():
@@ -55,7 +61,7 @@ def validating_webhook():
 def k8s_response(allowed, uid, message):
      return jsonify({"apiVersion": "admission.k8s.io/v1", "kind": "AdmissionReview", "response": {"allowed": allowed, "uid": uid, "status": {"message": message}}})
 
-#Function to respond back to the Admission Controller
+# Function to respond back to the Admission Controller
 # def k8s_response_mutating(allowed, uid, message, counter):
 #     mutating_path = f"/spec/containers/{counter}/image"
 #     json_patch = jsonpatch.JsonPatch([{"op": "replace", "path": mutating_path, "value": "nginx:latest"}])
