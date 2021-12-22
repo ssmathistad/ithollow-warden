@@ -7,7 +7,7 @@ warden = Flask(__name__)
 
 #POST route for Admission Controller  
 @warden.route('/validate', methods=['POST'])
-#Admission Control Logic
+#Admission Control Logic - validating
 def validating_webhook():
     request_info = request.get_json()
     uid = request_info["request"].get("uid")
@@ -25,34 +25,39 @@ def validating_webhook():
                 return k8s_response(allowed, uid, "Pod not created. There is a container it attempted to create in the nginx namespace that does not have an 'nginx' image.")
     except:
         return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'")
+        #return k8s_response(False, uid, "An error occured.")
 
     return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'")
 
-# @warden.route("/mutate", methods=["POST"])
-# def mutate():
-#     request_info = request.get_json()
-#     uid = request_info["request"].get("uid")
-#     counter = 0
+#POST route for Admission Controller
+@warden.route("/mutate", methods=["POST"])
+#Admission Control Logic - mutating
+def mutatating_webhook():
+    request_info = request.get_json()
+    uid = request_info["request"].get("uid")
+    allowed = True
+    counter = 0
 
-#     try:
-#         if request_info["request"]["object"].get("namespace") == "nginx":
-#             for container_spec in request_info["request"]["object"]["spec"]["containers"]:
-#                 if re.search("nginx", container_spec.get("image")) != None & re.search("nginx:latest", container_spec.get("image")) == None:
-#                     return k8s_response_mutating(True, uid, "The pod is using an 'nginx' image", counter)
+    try:
+        if request_info["request"]["object"]["metadata"].get("namespace") == "nginx":
+            for container_spec in request_info["request"]["object"]["spec"]["containers"]:
+                if re.search("nginx", container_spec.get("image")) != None & re.search("nginx:latest", container_spec.get("image")) == None:
+                    allowed = False
+                counter = counter + 1
+            return k8s_response_mutating(allowed, uid, "All containers should be using an 'nginx' image", counter)
+        else:
+            return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'", counter)
+            # return k8s_response(False, uid, "Pod not created. There is a container it attempted to create in the nginx namespace that does not have an 'nginx' image.")    
 
-#                 counter = counter + 1
-#             # return k8s_response_mutating(True, uid, "The pod has been created in a namespace other than 'nginx'", counter)
-#         else:
-#             return k8s_response(False, uid, "Pod not created. There is a container it attempted to create in the nginx namespace that does not have an 'nginx' image.")    
+    except:
+        return k8s_response(True, uid, "The pod has been created in a namespace other than 'nginx'", counter)
+        #return k8s_response(False, uid, "An error occured.")
 
-#     except:
-#         return k8s_response_mutating(True, uid, "The pod has been created in a namespace other than 'nginx'", counter)
-
-#Function to respond back to the Admission Controller
+#Function to respond back to the Admission Controller - validate
 def k8s_response(allowed, uid, message):
-     return jsonify({"apiVersion": "admission.k8s.io/v1", "kind": "AdmissionReview", "response": {"allowed": allowed, "uid": uid, "status": {"message": message}}})
+    return jsonify({"apiVersion": "admission.k8s.io/v1", "kind": "AdmissionReview", "response": {"allowed": allowed, "uid": uid, "status": {"message": message}}})
 
-# Function to respond back to the Admission Controller
+# Function to respond back to the Admission Controller - mutate
 def k8s_response_mutating(allowed, uid, message, counter):
     mutating_path = "/spec/containers/" + counter + "/image"
     json_patch = jsonpatch.JsonPatch([{"op": "replace", "path": mutating_path, "value": "nginx:latest"}])
