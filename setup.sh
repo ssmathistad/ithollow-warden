@@ -17,20 +17,22 @@ CA=`kubectl -n validation get secret validation-ca-tls -o jsonpath='{.data.ca\.c
 
 echo $CA
 
-docker build . -f validating.Dockerfile -t octumn/validating-webhook:latest
-docker push octumn/validating-webhook:latest 
+docker build . -t octumn/webhooks:latest
+docker push octumn/webhooks:latest 
 
-kind load docker-image octumn/validating-webhook:latest
+kind load docker-image octumn/webhooks:latest
 
 kubectl apply -f warden-k8s.yaml
 
 cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
 
-sleep 10
+sleep 5
 
 kubectl create ns nginx
 
-kubectl apply -f test-pods/test.yaml
+sleep 5
+
+kubectl apply -f test-pods
 
 # sleep 30
 

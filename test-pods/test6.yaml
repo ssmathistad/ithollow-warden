@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test6-nginx-two-containers
+  namespace: nginx
+  labels: 
+    app: nginx
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: test6a
+      image: nginx:latest
+      imagePullPolicy: Always
+    - name: test6b
+      image: busybox
+      imagePullPolicy: Always
