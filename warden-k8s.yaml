@@ -10,7 +10,7 @@ spec:
   containers:
     - name: warden
       image: octumn/validating-webhook:latest
-      imagePullPolicy: Always
+      # imagePullPolicy: Always
       volumeMounts:
         - name: certs
           mountPath: "/app/certs"

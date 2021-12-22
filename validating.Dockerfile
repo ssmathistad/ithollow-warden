@@ -15,4 +15,8 @@ COPY . /app
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "app/warden-validating.py" ]
+#CMD [ "app/warden-validating.py" ]
+
+CMD [ "app/bc-val.py" ]
+
+#CMD ["sh", "-c", "tail -f /dev/null"]
