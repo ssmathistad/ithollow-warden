@@ -1,13 +1,16 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: test5-nginx-img-default-ns
+  name: test5-busybox-img-default-ns
   namespace: default
   labels:
-    app: nginx
+    app: busybox
 spec:
   restartPolicy: OnFailure
   containers:
     - name: test5
-      image: nginx:latest
+      image: busybox:latest
       imagePullPolicy: Always
+      command:
+      - sleep
+      - "6000"

@@ -24,15 +24,14 @@ kind load docker-image octumn/webhooks:latest
 
 kubectl apply -f warden-k8s.yaml
 
-cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+# cat validating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+cat mutating-webhook.yaml | sed "s/      caBundle: .*/      caBundle: ${CA}/" | kubectl apply -f -
+
+kubectl create ns busybox
 
 sleep 5
 
-kubectl create ns nginx
-
-sleep 5
-
-kubectl apply -f test-pods
+# kubectl apply -f test-pods
 
 # sleep 30
 
